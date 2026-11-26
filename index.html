@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ambero — تحميل التطبيق / Download</title>
+<meta name="description" content="مشغّل IPTV لقنوات البث المباشر والأفلام والمسلسلات. متاح على Google Play، ونسخة ويندوز. / IPTV player for live channels, movies and series.">
+<meta property="og:title" content="Ambero — IPTV Player">
+<meta property="og:description" content="Live channels, movies and series — Android, iOS and Windows.">
+<meta property="og:image" content="assets/home.png">
+<link rel="icon" href="assets/icon-512.png">
+<!--
+  HOW TO PUBLISH
+  1. Cloudflare Pages -> Connect to Git -> this repo (private repos are fine on the
+     free plan). Build command: none. Output directory: ambero_website.
+     The site lands on https://<project>.pages.dev and this file is the home page.
+  2. Upload the installers to Cloudflare R2 (free tier) with stable names that you
+     overwrite on every release:
+       android/ambero-latest.apk
+       windows/ambero-latest.zip
+     Then paste the public URLs into the two "soon" buttons below and delete the
+     word soon from their class. They are spans right now, so change each one to
+     <a href="THE-URL" class="btn ghost">.
+  3. Bump the version string by hand (same habit as the app's Settings screen and
+     pubspec.yaml). Search for "1.0.1".
+  4. Keep privacy/index.html in sync with the app's policy text.
+-->
+<style>
+  :root{
+    --amber:#FFB300;
+    --amber-dim:#c98a00;
+    --bg:#000;
+    --surface:#0c0c0c;
+    --border:#222;
+    --text:#e8e8e8;
+    --muted:#9a9a9a;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font-family:"Segoe UI",Tahoma,"Noto Sans Arabic",Arial,sans-serif;
+    line-height:1.8;font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .glow{
+    position:fixed;inset:auto 0 -40vh 0;height:80vh;pointer-events:none;z-index:0;
+    background:radial-gradient(ellipse at 50% 100%,rgba(255,179,0,.16),rgba(255,179,0,0) 62%);
+  }
+  .wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:40px 22px 70px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:12px}
+  .mark{
+    width:38px;height:38px;border-radius:11px;display:grid;place-items:center;
+    background:linear-gradient(160deg,var(--amber),var(--amber-dim));
+    color:#000;font-weight:800;font-size:19px;
+  }
+  .brand b{letter-spacing:.22em;font-size:14px}
+  .brand span{display:block;font-size:11px;letter-spacing:.3em;color:var(--muted);font-weight:600}
+  button{
+    background:transparent;color:var(--amber);border:1px solid var(--amber);
+    border-radius:999px;padding:7px 16px;font-size:13px;font-weight:700;
+    cursor:pointer;font-family:inherit;transition:.18s;
+  }
+  button:hover{background:rgba(255,179,0,.12)}
+  h1{font-size:32px;line-height:1.3;margin:34px 0 8px}
+  h2{font-size:19px;margin:40px 0 12px;padding-inline-start:12px;
+     border-inline-start:3px solid var(--amber);line-height:1.45}
+  .lead{color:var(--muted);margin:0 0 22px;max-width:52ch}
+  ul.plain{list-style:none;padding:0;margin:0 0 26px;display:flex;flex-wrap:wrap;gap:8px}
+  ul.plain li{
+    font-size:12.5px;color:var(--text);border:1px solid var(--border);
+    background:var(--surface);border-radius:999px;padding:4px 12px;
+  }
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px}
+  .card p{margin:6px 0 14px;font-size:14px;color:var(--muted)}
+  .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.14em;
+       color:var(--amber);border:1px solid rgba(255,179,0,.35);border-radius:6px;
+       padding:2px 8px;margin-bottom:6px}
+  /* Letter-spacing breaks Arabic joins; keep it for the Latin labels only. */
+  main[lang="ar"] .tag{letter-spacing:normal;font-size:12px}
+  .card h3{margin:2px 0 0;font-size:17px}
+  a.btn,span.btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    border-radius:999px;padding:10px 18px;font-size:14px;font-weight:700;
+    text-decoration:none;border:1px solid var(--amber);color:var(--amber);
+    border-bottom:1px solid var(--amber);transition:.18s;margin:0 6px 6px 0;
+  }
+  a.btn.primary{background:var(--amber);color:#000}
+  a.btn.primary:hover{background:#ffc233}
+  a.btn.ghost:hover{background:rgba(255,179,0,.12)}
+  span.btn.soon{border-color:var(--border);color:var(--muted);cursor:default}
+  .ver{display:block;font-size:12px;color:var(--muted);margin-top:4px}
+  .shots{display:flex;gap:14px;overflow-x:auto;padding:2px 2px 10px}
+  .shots img{height:400px;border-radius:14px;border:1px solid var(--border);display:block}
+  footer{margin-top:46px;padding-top:20px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+  footer a{color:var(--amber);text-decoration:none;border-bottom:1px dotted var(--amber-dim)}
+  [hidden]{display:none !important}
+  @media(max-width:520px){
+    h1{font-size:26px}
+    .shots img{height:320px}
+  }
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <div class="mark">A</div>
+      <div>
+        <b>AMBERO</b>
+        <span>IPTV PLAYER</span>
+      </div>
+    </div>
+    <button id="toggle" type="button" onclick="swap()">English</button>
+  </header>
+
+  <!-- ==================== ARABIC ==================== -->
+  <main id="ar" lang="ar" dir="rtl">
+    <h1>حمّل Ambero</h1>
+    <p class="lead">مشغّل IPTV لقنوات البث المباشر والأفلام والمسلسلات. يعمل مع اشتراك Xtream الخاص بك — لا يوفّر الاشتراك ولا المحتوى.</p>
+    <ul class="plain">
+      <li>قنوات مباشرة ودليل برامج EPG</li>
+      <li>أفلام ومسلسلات مع متابعة المشاهدة</li>
+      <li>Android TV والهاتف والكمبيوتر</li>
+      <li>بث على التلفزيون (Chromecast)</li>
+    </ul>
+
+    <div class="grid">
+      <div class="card">
+        <span class="tag">أندرويد · ANDROID TV</span>
+        <h3>هاتف، تابلت، تلفزيون</h3>
+        <p>النسخة الرسمية عبر Google Play — التحديثات تصل تلقائيًا.</p>
+        <a class="btn primary" href="https://play.google.com/store/apps/details?id=com.ambero.iptv" target="_blank" rel="noopener">Google Play</a>
+        <span class="btn soon">تحميل APK مباشر</span>
+        <span class="ver">الإصدار 1.0.1</span>
+      </div>
+
+      <div class="card">
+        <span class="tag">آيفون · IPAD</span>
+        <h3>iOS</h3>
+        <p>نسخة iOS قيد النشر على App Store، وسيظهر الرابط هنا عند اعتمادها.</p>
+        <span class="btn soon">قريبًا على App Store</span>
+      </div>
+
+      <div class="card">
+        <span class="tag">ويندوز · WINDOWS</span>
+        <h3>نسخة الكمبيوتر</h3>
+        <p>ملف ZIP — فك الضغط ثم شغّل <code>ambero.exe</code>.</p>
+        <span class="btn soon">تحميل ZIP للويندوز</span>
+        <span class="ver">الإصدار 1.0.1</span>
+      </div>
+    </div>
+
+    <h2>من داخل التطبيق</h2>
+    <div class="shots">
+      <img src="assets/home.png" alt="الشاشة الرئيسية في Ambero" loading="lazy">
+      <img src="assets/live.png" alt="قناة مباشرة داخل Ambero" loading="lazy">
+    </div>
+
+    <p class="lead" style="margin-top:18px">Ambero مشغّل وسائط فقط: القنوات والأفلام تأتي من مزوّد الاشتراك الذي تدخله بنفسك.</p>
+  </main>
+
+  <!-- ==================== ENGLISH ==================== -->
+  <main id="en" lang="en" dir="ltr" hidden>
+    <h1>Download Ambero</h1>
+    <p class="lead">An IPTV player for live channels, movies and series. Works with your own Xtream subscription — it does not provide the subscription or the content.</p>
+    <ul class="plain">
+      <li>Live channels and EPG guide</li>
+      <li>Movies and series with resume</li>
+      <li>Android TV, phone and desktop</li>
+      <li>Cast to TV (Chromecast)</li>
+    </ul>
+
+    <div class="grid">
+      <div class="card">
+        <span class="tag">ANDROID · ANDROID TV</span>
+        <h3>Phone, tablet, TV</h3>
+        <p>The official build on Google Play — updates arrive automatically.</p>
+        <a class="btn primary" href="https://play.google.com/store/apps/details?id=com.ambero.iptv" target="_blank" rel="noopener">Google Play</a>
+        <span class="btn soon">Direct APK download</span>
+        <span class="ver">Version 1.0.1</span>
+      </div>
+
+      <div class="card">
+        <span class="tag">IPHONE · IPAD</span>
+        <h3>iOS</h3>
+        <p>The iOS build is in review for the App Store. The link appears here once it is approved.</p>
+        <span class="btn soon">Coming to the App Store</span>
+      </div>
+
+      <div class="card">
+        <span class="tag">WINDOWS</span>
+        <h3>Desktop</h3>
+        <p>A ZIP archive — unpack it and run <code>ambero.exe</code>.</p>
+        <span class="btn soon">Download Windows ZIP</span>
+        <span class="ver">Version 1.0.1</span>
+      </div>
+    </div>
+
+    <h2>Inside the app</h2>
+    <div class="shots">
+      <img src="assets/home.png" alt="Ambero home screen" loading="lazy">
+      <img src="assets/live.png" alt="Live channel playing in Ambero" loading="lazy">
+    </div>
+
+    <p class="lead" style="margin-top:18px">Ambero is a playback tool only: channels and movies come from the subscription provider you enter yourself.</p>
+  </main>
+
+  <footer>
+    <p>
+      © 2026 Ambero.
+      <a href="privacy/"><span id="pl-ar">سياسة الخصوصية</span><span id="pl-en" hidden>Privacy policy</span></a>
+      · <a href="mailto:anwerabdelkadir@gmail.com">anwerabdelkadir@gmail.com</a>
+    </p>
+  </footer>
+</div>
+
+<script>
+  function swap() {
+    var ar = document.getElementById('ar');
+    var en = document.getElementById('en');
+    var btn = document.getElementById('toggle');
+    var showingAr = !ar.hidden;
+    ar.hidden = showingAr;
+    en.hidden = !showingAr;
+    document.documentElement.lang = showingAr ? 'en' : 'ar';
+    document.documentElement.dir = showingAr ? 'ltr' : 'rtl';
+    btn.textContent = showingAr ? 'العربية' : 'English';
+    document.getElementById('pl-ar').hidden = showingAr;
+    document.getElementById('pl-en').hidden = !showingAr;
+  }
+</script>
+</body>
+</html>
